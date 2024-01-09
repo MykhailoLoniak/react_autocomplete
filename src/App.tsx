@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import debounce from 'lodash.debounce';
+import classNames from 'classnames';
 
 import { peopleFromServer } from './data/people';
 
@@ -40,7 +41,7 @@ export const App: React.FC = () => {
 
   const filterPerson = useMemo(() => {
     return peopleFromServer.filter(perso => perso.name
-      .toLowerCase().includes(appliedValue.toLowerCase()));
+      .toLowerCase().includes(appliedValue.toLowerCase().trim()));
   }, [appliedValue]);
 
   const handleClick = useCallback((persName) => {
@@ -51,13 +52,17 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {name && (
-        <h1 className="title">
-          {`${name} (${born} = ${died})`}
-        </h1>
-      )}
+      <h1 className="title">
+        {name ? (
+          `${name} (${born} = ${died})`
+        ) : (
+          'No selected person'
+        )}
+      </h1>
 
-      <div className={`dropdown ${isDropdownActive ? 'is-active' : ''}`}>
+      <div className={classNames('dropdown', {
+        'is-active': isDropdownActive,
+      })}>
         <div className="dropdown-trigger">
           <input
             type="text"
@@ -103,6 +108,6 @@ export const App: React.FC = () => {
           </div>
         </div>
       </div>
-    </main>
+    </main >
   );
 };
