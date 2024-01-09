@@ -75,14 +75,17 @@ export const App: React.FC = () => {
             {filterPerson.length ? (
               filterPerson.map(pers => (
                 <div
-                  style={{ cursor: 'pointer' }}
                   className="dropdown-item"
                   key={pers.name}
                 >
                   <button
+                    style={{
+                      border: 'none',
+                      backgroundColor: 'white',
+                      cursor: 'pointer',
+                    }}
                     type="button"
                     onMouseDown={() => handleClick(pers)}
-
                   >
                     <p
                       className="has-text-link"
