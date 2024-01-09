@@ -37,8 +37,10 @@ export const App: React.FC = () => {
       .toLowerCase().includes(appliedValue.toLowerCase()));
   }, [appliedValue]);
 
-  const handleClick = useCallback((persName: string) => {
-    setChange(persName);
+  const handleClick = useCallback((persName) => {
+    console.log('click');
+
+    setChange(persName.name);
     setIsDropdownActive(false);
   }, []);
 
@@ -64,27 +66,25 @@ export const App: React.FC = () => {
         <div className="dropdown-menu" role="menu">
           <div className="dropdown-content">
             {filterPerson.length ? (
-              filterPerson.map(pers => (
-                <div
-                  style={{ cursor: 'pointer' }}
-                  className="dropdown-item"
-                  key={pers.name}
-                  role="button"
-                  onClick={() => handleClick(pers.name)}
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleClick(pers.name);
-                    }
-                  }}
-                >
-                  <p
-                    className="has-text-link"
+              filterPerson.map(pers => {
+                console.log(pers);
+
+                return (
+                  <div
+                    style={{ cursor: 'pointer' }}
+                    className="dropdown-item"
+                    key={pers.name}
                   >
-                    {pers.name}
-                  </p>
-                </div>
-              ))
+                    <a onClick={() => handleClick(pers)}>
+                      <p
+                        className="has-text-link"
+                      >
+                        {pers.name}
+                      </p>
+                    </a>
+                  </div>
+                );
+              })
             ) : (
               <div className="dropdown-item" key="No matching suggestions">
                 <p className="has-text-danger">No matching suggestions</p>
