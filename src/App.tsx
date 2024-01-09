@@ -4,18 +4,24 @@ import debounce from 'lodash.debounce';
 import { peopleFromServer } from './data/people';
 
 import './App.scss';
-// import { Person } from './types/Person';
 
 export const App: React.FC = () => {
   const [change, setChange] = useState('');
-
-  const { name, born, died } = peopleFromServer[0];
   const [appliedValue, setAppliedValue] = useState('');
+  const [selectedPerson, setSelectedPerson] = useState({
+    name: '',
+    born: '',
+    died: '',
+  });
   const [isDropdownActive, setIsDropdownActive] = useState(false);
+  const { name, born, died } = selectedPerson || {};
 
-  const handleDebouncedChange = useCallback(debounce((inputValue: string) => {
-    setAppliedValue(inputValue);
-  }, 1000), []);
+  const handleDebouncedChange = useCallback(
+    debounce((inputValue: string) => {
+      setAppliedValue(inputValue);
+    }, 1000),
+    [],
+  );
 
   const handleInputFocus = () => {
     setIsDropdownActive(true);
@@ -38,17 +44,18 @@ export const App: React.FC = () => {
   }, [appliedValue]);
 
   const handleClick = useCallback((persName) => {
-    console.log('click');
-
     setChange(persName.name);
+    setSelectedPerson(persName);
     setIsDropdownActive(false);
   }, []);
 
   return (
     <main className="section">
-      <h1 className="title">
-        {`${name} (${born} = ${died})`}
-      </h1>
+      {name && (
+        <h1 className="title">
+          {`${name} (${born} = ${died})`}
+        </h1>
+      )}
 
       <div className={`dropdown ${isDropdownActive ? 'is-active' : ''}`}>
         <div className="dropdown-trigger">
@@ -66,25 +73,25 @@ export const App: React.FC = () => {
         <div className="dropdown-menu" role="menu">
           <div className="dropdown-content">
             {filterPerson.length ? (
-              filterPerson.map(pers => {
-                console.log(pers);
+              filterPerson.map(pers => (
+                <div
+                  style={{ cursor: 'pointer' }}
+                  className="dropdown-item"
+                  key={pers.name}
+                >
+                  <button
+                    type="button"
+                    onMouseDown={() => handleClick(pers)}
 
-                return (
-                  <div
-                    style={{ cursor: 'pointer' }}
-                    className="dropdown-item"
-                    key={pers.name}
                   >
-                    <a onClick={() => handleClick(pers)}>
-                      <p
-                        className="has-text-link"
-                      >
-                        {pers.name}
-                      </p>
-                    </a>
-                  </div>
-                );
-              })
+                    <p
+                      className="has-text-link"
+                    >
+                      {pers.name}
+                    </p>
+                  </button>
+                </div>
+              ))
             ) : (
               <div className="dropdown-item" key="No matching suggestions">
                 <p className="has-text-danger">No matching suggestions</p>
